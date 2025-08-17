@@ -1,0 +1,4 @@
+backend/.env
+node_modules/
+backend/uploads/
+android/app/google-services.json
