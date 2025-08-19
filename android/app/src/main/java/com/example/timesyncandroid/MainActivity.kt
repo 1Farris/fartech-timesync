@@ -41,6 +41,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+
 @Composable
 fun AppNavigation(authViewModel: AuthViewModel, timeViewModel: TimeViewModel) {
     val navController = rememberNavController()
@@ -54,8 +55,15 @@ fun AppNavigation(authViewModel: AuthViewModel, timeViewModel: TimeViewModel) {
             DashboardScreen(timeViewModel, onLogTime = { navController.navigate("time_entry") })
         }
         composable("time_entry") {
-            TimeEntryScreen(timeViewModel, onTimeLogged = { navController.popBackStack() })
+            TimeEntryScreen(timeViewModel, onTimeLogged = { navController.popBackStack() }
+            // Add file picker logic using ActivityResultLauncher
+            // Example: val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri -> uploadProof(uri) }
+            // Implement uploadProof using Retrofit POST to /proof)
         }
+        composable("team_management") {
+            TeamManagementScreen(teamViewModel)
+        }
+
     }
 }
 
@@ -131,6 +139,8 @@ fun DashboardScreen(timeViewModel: TimeViewModel, onLogTime: () -> Unit) {
         }
     }
 }
+
+
 
 @Composable
 fun TimeEntryScreen(timeViewModel: TimeViewModel, onTimeLogged: () -> Unit) {

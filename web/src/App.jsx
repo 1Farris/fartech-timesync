@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import TeamManagement from './TeamManagement';
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -8,12 +9,14 @@ const App = () => {
   const [hours, setHours] = useState('');
   const [minutes, setMinutes] = useState('');
   const [timesheets, setTimesheets] = useState([]);
+  const [activeTab, setActiveTab] = useState('dashboard'); // NEW: switch between dashboard and team
 
-useEffect(() => {
-  if (user) {
-    axios.get('http://api.fartech-timesync.com/test-sync').then(res => console.log(res.data));
-  }
-}, [user]);
+  useEffect(() => {
+    if (user) {
+      axios.get('http://api.fartech-timesync.com/test-sync')
+        .then(res => console.log(res.data));
+    }
+  }, [user]);
 
   useEffect(() => {
     // Check for logged-in user (e.g., from localStorage or token)
@@ -80,26 +83,50 @@ useEffect(() => {
       ) : (
         <div>
           <h1 className="text-2xl font-bold mb-4 text-gray-800">TimeSync Dashboard</h1>
-          <input
-            type="number"
-            value={hours}
-            onChange={e => setHours(e.target.value)}
-            placeholder="Hours"
-            className="border border-gray-300 p-2 mb-2 w-full rounded"
-          />
-          <input
-            type="number"
-            value={minutes}
-            onChange={e => setMinutes(e.target.value)}
-            placeholder="Minutes"
-            className="border border-gray-300 p-2 mb-2 w-full rounded"
-          />
-          <button
-            onClick={logTime}
-            className="bg-blue-500 text-white p-2 w-full rounded hover:bg-blue-600"
-          >
-            Log Time
-          </button>
+
+          {/* Navigation Tabs */}
+          <div className="flex space-x-2 mb-4">
+            <button
+              onClick={() => setActiveTab('dashboard')}
+              className={`p-2 rounded ${activeTab === 'dashboard' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+            >
+              Dashboard
+            </button>
+            <button
+              onClick={() => setActiveTab('team')}
+              className={`p-2 rounded ${activeTab === 'team' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+            >
+              Team
+            </button>
+          </div>
+
+          {/* Conditional rendering */}
+          {activeTab === 'dashboard' ? (
+            <div>
+              <input
+                type="number"
+                value={hours}
+                onChange={e => setHours(e.target.value)}
+                placeholder="Hours"
+                className="border border-gray-300 p-2 mb-2 w-full rounded"
+              />
+              <input
+                type="number"
+                value={minutes}
+                onChange={e => setMinutes(e.target.value)}
+                placeholder="Minutes"
+                className="border border-gray-300 p-2 mb-2 w-full rounded"
+              />
+              <button
+                onClick={logTime}
+                className="bg-blue-500 text-white p-2 w-full rounded hover:bg-blue-600"
+              >
+                Log Time
+              </button>
+            </div>
+          ) : (
+            <TeamManagement user={user} />
+          )}
         </div>
       )}
     </div>

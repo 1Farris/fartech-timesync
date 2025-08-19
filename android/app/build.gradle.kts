@@ -8,12 +8,12 @@ plugins {
 
 android {
     namespace = "com.fartech.timesync" // Updated to match project
-    compileSdk = 35
+    compileSdk = 36 // Updated from 35 to 36
 
     defaultConfig {
         applicationId = "com.fartech.timesync" // Updated to match project
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36 // Updated from 35 to 36
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -32,9 +32,14 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "11"
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
+            // You can set other Kotlin compiler options here too, for example:
+            // freeCompilerArgs.add("-Xopt-in=kotlin.RequiresOptIn")
+        }
     }
+
     buildFeatures {
         compose = true
     }
