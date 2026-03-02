@@ -31,7 +31,7 @@ export const authService = {
   const response = await api.post('/auth/login', {}, {
     headers: { Authorization: `Bearer ${idToken}` }
   });
-
+console.log (response)
   return response.data.user;
 },
 

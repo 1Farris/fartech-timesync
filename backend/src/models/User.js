@@ -1,69 +1,83 @@
-const mongoose = require('mongoose');
-const { initializeApp } = require('firebase/app');
-//const { firebaseConfig } = require('../config/firebase');
-//const app = initializeApp(firebaseConfig);
-//exports.auth = getAuth(app);
+const mongoose = require("mongoose");
 
-const userSchema = new mongoose.Schema({
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    lowercase: true,
-    trim: true
-  },
-  firebaseUid: {
-    type: String,
-    required: true,
-    unique: true,
-    index: true
-  },
-  firstName: {
-    type: String,
-    required: true
-  },
-  lastName: {
-    type: String,
-    required: true
-  },
-  role: {
-    type: String,
-    enum: ['worker', 'team-leader', 'admin'],
-    default: 'worker'
-  },
-  payRate: {
-    type: Number,
-    default: 15
-  },
-  teamId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Team',
-    default: null
-  },
-  subscription: {
-    plan: {
+const userSchema = new mongoose.Schema(
+  {
+    email: {
       type: String,
-      enum: ['trial', 'basic', 'pro'],
-      default: 'trial'
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
     },
-    status: {
+
+    firebaseUid: {
       type: String,
-      enum: ['active', 'cancelled', 'expired'],
-      default: 'active'
+      required: true,
+      unique: true,
+      index: true,
     },
-    trialEndsAt: {
+
+    firstName: {
+      type: String,
+      required: true,
+    },
+
+    lastName: {
+      type: String,
+      required: true,
+    },
+
+    role: {
+      type: String,
+      enum: ["worker", "team-leader", "admin"],
+      default: "worker",
+    },
+
+    payRate: {
+      type: Number,
+      default: 15,
+    },
+
+    teamId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Team",
+      default: null,
+    },
+
+    /* =====================================
+       SUBSCRIPTION SYSTEM (STRIPE READY)
+    ===================================== */
+
+    subscriptionStatus: {
+      type: String,
+      enum: ["trial", "active", "canceled", "past_due", "unpaid"],
+      default: "trial",
+    },
+
+    subscriptionCurrentPeriodEnd: {
       type: Date,
-      default: () => new Date(Date.now() + 2 * 24 * 60 * 60 * 1000) // 2 days
+      default: () =>
+        new Date(Date.now() + 60 * 24 * 60 * 60 * 1000), // 60 days trial
     },
-    stripeCustomerId: String,
-    stripeSubscriptionId: String
-  },
-  isActive: {
-    type: Boolean,
-    default: true
-  }
-}, {
-  timestamps: true
-});
 
-module.exports = mongoose.model('User', userSchema);
+    stripeCustomerId: {
+      type: String,
+      default: null,
+    },
+
+    stripeSubscriptionId: {
+      type: String,
+      default: null,
+    },
+
+    /* ===================================== */
+
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
+  },
+  { timestamps: true }
+);
+
+module.exports = mongoose.model("User", userSchema);

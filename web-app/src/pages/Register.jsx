@@ -67,7 +67,7 @@ export default function Register() {
             Create Account
           </h1>
           <p className="text-sm text-gray-500 mt-2">
-            Get started with your <span className="font-semibold text-blue-600">2-day free trial</span>
+            Get started with your <span className="font-semibold text-blue-600">60-days free trial</span>
           </p>
         </header>
 

@@ -1,19 +1,62 @@
-const express = require('express');
-const teamController = require('../controllers/teamController');
-const { authenticate, authorize } = require('../middleware/auth');
+const express = require("express");
+const teamController = require("../controllers/teamController");
+const { authenticate, authorize } = require("../middleware/auth");
 
 const router = express.Router();
 
-router.post('/', [
-  authenticate,
-  authorize('team-leader', 'admin')
-], teamController.createTeam);
+/* ======================================================
+   ADMIN ROUTES
+====================================================== */
 
-router.post('/members', [
+// Create Team (Admin Only)
+router.post(
+  "/",
   authenticate,
-  authorize('team-leader', 'admin')
-], teamController.addMember);
+  authorize("admin"),
+  teamController.createTeam
+);
 
-router.get('/:teamId', authenticate, teamController.getTeamMembers);
+// Get All Teams (Admin Only)
+router.get(
+  "/",
+  authenticate,
+  authorize("admin"),
+  teamController.getAllTeams
+);
+
+// Delete Team (Admin Only)
+router.delete(
+  "/:teamId",
+  authenticate,
+  authorize("admin"),
+  teamController.deleteTeam
+);
+
+/* ======================================================
+   ADMIN + TEAM LEADER ROUTES
+====================================================== */
+
+// Add Member (Admin OR Team Leader)
+router.post(
+  "/members",
+  authenticate,
+  authorize("admin", "team-leader"),
+  teamController.addMember
+);
+
+// Remove Member (Admin OR Team Leader)
+router.post(
+  "/remove-member",
+  authenticate,
+  authorize("admin", "team-leader"),
+  teamController.removeMember
+);
+
+// Get Single Team (Admin OR Leader of that team)
+router.get(
+  "/:teamId",
+  authenticate,
+  teamController.getTeamMembers
+);
 
 module.exports = router;
