@@ -1,3 +1,9 @@
+# docker-compose.yml
+# -----------------------
+# Docker Compose configuration file for the backend server and MongoDB database. 
+# Defines services, environment variables, ports, and volumes for both components. 
+# This file allows for easy setup and management of the development environment using Docker.
+
 version: '3.8'
 services:
   mongodb:
@@ -20,7 +26,7 @@ services:
       - "5000:5000"
     environment:
       - NODE_ENV=development
-      - MONGODB_URI=mongodb+srv://jofahariya:Farris12com!!!@clusterswissaxa.7m6ct7j.mongodb.net/?appName=ClusterSwissAXA
+      - MONGODB_URI=mongodb+srv://jofahariya:Farris12com@clusterswissaxa.7m6ct7j.mongodb.net/fartechdb?appName=ClusterSwissAXA
     depends_on:
       - mongodb
     volumes:

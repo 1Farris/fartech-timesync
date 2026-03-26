@@ -4,6 +4,13 @@ const { authenticate, authorize } = require("../middleware/auth");
 
 const router = express.Router();
 
+/**
+ * teams.js
+ * -----------------------
+ * Routes for managing teams, including team creation, member management, and team retrieval. 
+ * Protected by authentication and role-based authorization middleware. 
+ */
+
 /* ======================================================
    ADMIN ROUTES
 ====================================================== */

@@ -1,0 +1,8 @@
+# This .dockerignore file is used to specify files and directories that should be excluded from the Docker build context when building the Docker image for the TimeSync web application. By ignoring unnecessary files and directories, we can reduce the size of the build context, speed up the build process, and ensure that sensitive information (like environment variables) is not included in the Docker image.
+
+node_modules
+dist
+.git
+.gitignore
+.env
+Dockerfile

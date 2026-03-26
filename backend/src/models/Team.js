@@ -1,5 +1,10 @@
 const mongoose = require('mongoose');
 
+/**
+ * Team Model
+ * -----------------------
+ * Represents a team within the organization, including its name, leader, members, and description.
+ */
 const teamSchema = new mongoose.Schema({
   name: {
     type: String,

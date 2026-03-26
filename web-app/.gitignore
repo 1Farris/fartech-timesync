@@ -1,3 +1,5 @@
+# This .gitignore file is used to specify files and directories that should be ignored by Git when committing changes to the repository. It helps to keep the repository clean by excluding files that are generated during development, such as logs, build artifacts, and local configuration files. By ignoring these files, we can ensure that only relevant source code and necessary assets are tracked in version control, making it easier to manage the project and collaborate with other developers.
+
 # Logs
 logs
 *.log

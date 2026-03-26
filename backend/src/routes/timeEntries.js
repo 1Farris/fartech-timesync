@@ -10,6 +10,16 @@ const validate = require("../middleware/validation");
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
 
+
+/**
+ * timeEntries.js
+ * -----------------------
+ * Routes for managing time entries, including creation, retrieval, approval, and rejection. 
+ * Protected by authentication and subscription validation middleware.  
+ */
+
+
+
 /**
  * ===============================
  * CREATE TIME ENTRY (Weekly)

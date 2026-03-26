@@ -2,6 +2,14 @@ const express = require("express");
 const User = require("../models/User");
 const { authenticate, authorize } = require("../middleware/auth");
 
+/**
+ * users.js
+ * -----------------------
+ * Routes for managing users, including retrieval of user lists filtered by role. 
+ * Protected by authentication and admin-only authorization middleware.   
+ */
+
+
 const router = express.Router();
 
 /* ================= GET USERS BY ROLE ================= */

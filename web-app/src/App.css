@@ -1,3 +1,14 @@
+/**
+ * App.css
+ * -----------------------
+ * This file contains the CSS styles for the main App component of the TimeSync application. 
+ * It defines the layout and styling for the root element, logos, cards, and other UI elements. 
+ * The styles include responsive design features, animations for logos, and hover effects to enhance the 
+ * user experience. The CSS is structured to provide a clean and modern look while ensuring that the 
+ * application is visually appealing and easy to navigate.
+ * 
+ */
+
 #root {
   max-width: 1280px;
   margin: 0 auto;

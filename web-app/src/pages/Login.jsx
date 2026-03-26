@@ -3,6 +3,20 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Clock, ArrowRight,Loader2 } from 'lucide-react';
 import { useAuth } from '../contexts/useAuth';
 
+/**
+ * login.jsx
+ * -----------------------
+ * This component renders the login page for the TimeSync application. It provides a form for users 
+ * to enter their email and password to authenticate. The component uses React's useState hook to 
+ * manage form input and error state, and useAuth context to handle the login process. Upon successful 
+ * login, users are redirected to the dashboard. The page is styled using Tailwind CSS for a modern and 
+ * responsive design. 
+ *    
+ * @returns 
+ */
+
+
+// Define the Login component that renders the login page and handles user authentication.
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -12,6 +26,8 @@ export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
+
+  // Handle form submission to authenticate the user and navigate to the dashboard on success.
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -28,6 +44,8 @@ export default function Login() {
     }
   };
 
+  // Render the login form with email and password fields, error messages, and a submit button. 
+  // Also includes links for account creation and password recovery.
   return (
     <section className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 flex items-center justify-center px-4 py-12">
       <main className="max-w-md w-full bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
@@ -38,7 +56,7 @@ export default function Login() {
             <Clock className="text-white" size={28} />
           </div>
           <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
-            Welcome to TimeSync
+            Welcome to FarTech TimeSync
           </h1>
           <p className="text-sm text-gray-500 mt-2">
             Sign in to manage your time and earnings
@@ -51,6 +69,9 @@ export default function Login() {
               <p className="text-sm text-red-700 font-medium">{error}</p>
             </div>
           )}
+
+          {/*Login form with email and password inputs, and a submit button that shows a loading 
+          state when the login process is in progress.*/}
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-1.5">

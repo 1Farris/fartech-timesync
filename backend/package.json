@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/server.js",
+    "test": "set NODE_ENV=test && jest",
     "dev": "nodemon src/server.js",
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
@@ -29,10 +30,15 @@
     "morgan": "^1.10.1",
     "multer": "^2.0.2",
     "multer-s3": "^3.0.1",
+    "node-cron": "^4.2.1",
     "pdfkit": "^0.17.2",
-    "stripe": "^19.3.0"
+    "recharts": "^3.7.0",
+    "stripe": "^19.3.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "jest": "^30.2.0",
+    "nodemon": "^3.1.10",
+    "supertest": "^7.2.2"
   }
 }

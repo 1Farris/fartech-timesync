@@ -1,6 +1,14 @@
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/useAuth';
 
+/**
+ * ProtectedRoute.jsx
+ * -----------------------
+ * A higher-order component that wraps around protected routes to enforce authentication and 
+ * role-based access control.   
+ */
+
+
 export default function ProtectedRoute({ children, roles }) {
   const { user, loading } = useAuth(); 
 

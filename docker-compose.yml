@@ -1,0 +1,30 @@
+services:
+
+  mongo:
+    image: mongo:6
+    container_name: fartech-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  backend:
+    build: ./backend
+    container_name: fartech-backend
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongo
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/fartechdb
+
+  frontend:
+    build: ./web-app
+    container_name: fartech-frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+volumes:
+  mongo_data:

@@ -1,6 +1,12 @@
 const { admin } = require('../config/firebase');
 const User = require('../models/User');
 
+/**
+ * Auth Middleware
+ * -----------------------
+ * Provides authentication and authorization middleware for protecting routes. 
+ */ 
+
 const authenticate = async (req, res, next) => {
   try {
     const token = req.headers.authorization?.split('Bearer ')[1];

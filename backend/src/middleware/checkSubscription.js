@@ -1,5 +1,11 @@
 const User = require("../models/User");
 
+/**
+ * Subscription Middleware
+ * -----------------------
+ * Validates user subscription status before allowing access to protected routes. 
+ * Checks for active Stripe subscription or valid trial period.
+ */
 const checkSubscription = async (req, res, next) => {
   try {
     const user = await User.findById(req.user._id);
@@ -9,14 +15,14 @@ const checkSubscription = async (req, res, next) => {
     }
 
     /* ===============================
-       1️⃣ ACTIVE STRIPE SUBSCRIPTION
+       ACTIVE STRIPE SUBSCRIPTION
     =============================== */
     if (user.subscriptionStatus === "active") {
       return next();
     }
 
     /* ===============================
-       2️⃣ TRIAL LOGIC
+       TRIAL LOGIC
     =============================== */
     if (user.subscriptionStatus === "trial") {
       if (user.subscriptionCurrentPeriodEnd &&
@@ -31,7 +37,7 @@ const checkSubscription = async (req, res, next) => {
     }
 
     /* ===============================
-       3️⃣ CANCELED / PAST DUE / UNPAID
+       CANCELED / PAST DUE / UNPAID
     =============================== */
     return res.status(403).json({
       error: "Subscription inactive. Please renew to continue.",

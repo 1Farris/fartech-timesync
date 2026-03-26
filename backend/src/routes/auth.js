@@ -4,6 +4,18 @@ const authController = require('../controllers/authController');
 const { authenticate } = require('../middleware/auth');
 const validate = require('../middleware/validation');
 
+/**
+ * auth.js
+ * -----------------------
+ * Routes for user authentication and profile management.   
+ * Includes registration, login, and profile retrieval endpoints.
+ * // Note: Registration includes validation for email, password, and name fields.
+ */
+
+
+/* =========================
+   ROUTES
+========================= */
 const router = express.Router();
 
 router.post('/register', [

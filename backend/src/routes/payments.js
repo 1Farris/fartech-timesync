@@ -2,6 +2,13 @@ const express = require("express");
 const paymentController = require("../controllers/paymentController");
 const { authenticate } = require("../middleware/auth");
 
+/**
+ * payments.js
+ * -----------------------
+ * Routes for handling payment-related operations, including payment calculation, Stripe 
+ * webhook processing, and PDF generation.    
+ */
+
 const router = express.Router();
 
 /* ================= STRIPE WEBHOOK (NO AUTH) ================= */

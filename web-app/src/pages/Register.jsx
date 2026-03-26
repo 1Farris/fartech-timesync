@@ -3,6 +3,19 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Clock, Loader2 } from 'lucide-react';
 import { useAuth } from '../contexts/useAuth';
 
+/**
+ * Register.jsx
+ * -----------------------
+ * This component renders the registration page for the TimeSync application. It provides a form for 
+ * new users to create an account by entering their first name, last name, email, password, and 
+ * selecting a workspace role. The component uses React's useState hook to manage form input and 
+ * error state, and useAuth context to handle the registration process. Upon successful registration, 
+ * users are redirected to the dashboard. The page is styled using Tailwind CSS for a modern and 
+ * responsive design.
+ * 
+ */
+
+// Define the Register component that renders the registration page and handles user account creation.
 export default function Register() {
   const [formData, setFormData] = useState({
     email: '',
@@ -18,10 +31,13 @@ export default function Register() {
   const { register } = useAuth();
   const navigate = useNavigate();
 
+  {/* ================= HANDLE FORM INPUT & SUBMISSION ================= */}
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  {/* Handle form submission to create a new user account and navigate to the dashboard on success. 
+    Validates password confirmation and length before attempting registration. */}
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');

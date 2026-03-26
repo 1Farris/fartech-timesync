@@ -1,5 +1,11 @@
 const mongoose = require("mongoose");
 
+/**
+ * User Model
+ * -----------------------
+ * Represents a user in the system, including authentication details, role, team association, 
+ * pay rate, and subscription status.
+ */
 const userSchema = new mongoose.Schema(
   {
     email: {
@@ -70,7 +76,9 @@ const userSchema = new mongoose.Schema(
       default: null,
     },
 
-    /* ===================================== */
+    /* ==============  
+    ACCOUNT STATUS & SETTINGS
+    ======================= */
 
     isActive: {
       type: Boolean,

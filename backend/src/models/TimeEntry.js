@@ -1,5 +1,11 @@
 const mongoose = require("mongoose");
 
+/**
+ * TimeEntry Model
+ * -----------------------
+ * Represents a time entry for a user, including hours worked, company type, approval status, 
+ * and related metadata.
+ */
 const dailyHoursSchema = {
   monday: { type: Number, min: 0, max: 8, default: 0 },
   tuesday: { type: Number, min: 0, max: 8, default: 0 },
@@ -32,6 +38,22 @@ const timeEntrySchema = new mongoose.Schema(
       type: String,
       enum: ["RWS", "Welocalized", "Telus"],
       required: true,
+    },
+
+    /* ========== PAYMENT & APPROVAL FIELDS ========== */
+
+    isPaid: {
+      type: Boolean,
+      default: false,
+    },
+
+    paidAt: {
+      type: Date,
+    },
+
+    locked: {
+      type: Boolean,
+      default: false,
     },
 
     /* ================= RWS ================= */

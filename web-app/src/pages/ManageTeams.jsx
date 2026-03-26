@@ -1,6 +1,21 @@
 import React, { useEffect, useState } from "react";
 import api from "../services/api";
 
+/**
+ * ManageTeams.jsx
+ * -----------------------
+ * This component allows admin users to manage teams within the TimeSync application. 
+ * Admins can create new teams by specifying a team name and selecting a team leader from the list of 
+ * users. They can also add members to existing teams and remove members from teams. The component 
+ * fetches the list of teams and users from the backend API and displays them in a user-friendly 
+ * interface. Tailwind CSS is used for styling the layout and form elements.
+ * The component uses React's useEffect hook to fetch data when the component mounts and useState 
+ * to manage the teams, users, and form state. It provides functions to handle creating teams, adding 
+ * members, and removing members, which interact with the backend API to update the team data 
+ * accordingly.
+ */
+
+// Define the ManageTeams component that renders the team management page for admin users.
 export default function ManageTeams() {
   const [teams, setTeams] = useState([]);
   const [users, setUsers] = useState([]);
@@ -9,6 +24,7 @@ export default function ManageTeams() {
   const [selectedTeamId, setSelectedTeamId] = useState("");
   const [memberId, setMemberId] = useState("");
 
+  /* ================= FETCH TEAMS & USERS ================= */
   const fetchTeams = async () => {
     const res = await api.get("/teams");
     setTeams(res.data.teams || []);
@@ -67,11 +83,11 @@ export default function ManageTeams() {
   };
 
   return (
-    <div className="p-6 max-w-6xl mx-auto">
+    <div className="space-y-6">
       <h2 className="text-2xl font-bold mb-6">Manage Teams</h2>
 
       {/* CREATE TEAM */}
-      <div className="bg-white shadow rounded p-4 mb-6">
+      <div className="bg-gray-800 border border-gray-700 rounded-xl p-4 mb-6">
         <h3 className="font-semibold mb-4">Create New Team</h3>
 
         <div className="grid md:grid-cols-3 gap-4">
@@ -80,13 +96,13 @@ export default function ManageTeams() {
             placeholder="Team Name"
             value={teamName}
             onChange={(e) => setTeamName(e.target.value)}
-            className="border p-2 rounded"
+            className="bg-gray-900 border border-gray-700 p-2 rounded text-white"
           />
 
           <select
             value={leaderId}
             onChange={(e) => setLeaderId(e.target.value)}
-            className="border p-2 rounded"
+            className="bg-gray-900 border border-gray-700 p-2 rounded text-white"
           >
             <option value="">Select Team Leader</option>
             {users
@@ -108,14 +124,14 @@ export default function ManageTeams() {
       </div>
 
       {/* ADD MEMBER */}
-      <div className="bg-white shadow rounded p-4 mb-6">
+      <div className="bg-gray-800 border border-gray-700 rounded-xl p-4 mb-6">
         <h3 className="font-semibold mb-4">Add Member to Team</h3>
 
         <div className="grid md:grid-cols-3 gap-4">
           <select
             value={selectedTeamId}
             onChange={(e) => setSelectedTeamId(e.target.value)}
-            className="border p-2 rounded"
+            className="bg-gray-900 border border-gray-700 p-2 rounded text-white"
           >
             <option value="">Select Team</option>
             {teams.map((team) => (
@@ -128,7 +144,7 @@ export default function ManageTeams() {
           <select
             value={memberId}
             onChange={(e) => setMemberId(e.target.value)}
-            className="border p-2 rounded"
+            className="bg-gray-900 border border-gray-700 p-2 rounded text-white"
           >
             <option value="">Select Member</option>
             {users
@@ -150,7 +166,7 @@ export default function ManageTeams() {
       </div>
 
       {/* TEAM LIST */}
-      <div className="bg-white shadow rounded p-4">
+      <div className="bg-gray-800 border border-gray-700 rounded-xl p-4">
         <h3 className="font-semibold mb-4">Existing Teams</h3>
 
         {teams.map((team) => (

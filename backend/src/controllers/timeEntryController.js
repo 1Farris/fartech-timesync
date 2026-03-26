@@ -2,6 +2,30 @@ const TimeEntry = require("../models/TimeEntry");
 const Team = require("../models/Team"); //  REQUIRED for team filtering // 
 const { uploadToS3 } = require("../config/aws"); 
 
+/**
+ * TimeEntry Controller
+ * ---------------------
+ * Handles all operations related to employee time tracking.
+ *
+ * Responsibilities:
+ * - Create new time entries
+ * - Retrieve employee work logs
+ * - Update time entries
+ * - Delete entries if necessary
+ *
+ * This controller communicates with the TimeEntryService
+ * to process business logic and interact with the database.
+ */
+
+/**
+ * Create a new time entry
+ * @route POST /api/time-entry
+ * @param {Request} req - Express request object
+ * @param {Response} res - Express response object
+ * @desc    Create a new weekly time entry 
+ * @access  Private 
+ */ 
+
 
 /* ===================================================================== 
                         CREATE WEEKLY TIME ENTRY 
@@ -142,122 +166,166 @@ exports.getPendingEntries = async (req, res) => {
 
     /* ===========================================================
                     UPDATE TIME ENTRY 
-     ============================================================= */ 
-    exports.updateTimeEntry = async (req, res) => { 
-      try { 
-        const { timeEntryId } = req.params; 
-        const { 
-          weeklyTotalHours, 
-          dailyHours, 
-          description, 
-          weekStart, 
-          weekEnd 
-        } = req.body; 
+============================================================= */
+exports.updateTimeEntry = async (req, res) => {
+  try {
+    const { timeEntryId } = req.params;
+    const {
+      weeklyTotalHours,
+      dailyHours,
+      description,
+      weekStart,
+      weekEnd,
+    } = req.body;
 
-          const timeEntry = await TimeEntry.findById(timeEntryId); 
-          if (!timeEntry) 
-            return res.status(404).json({ error: "Time entry not found" }); 
-          
-          if (timeEntry.status === "approved") { 
-            return res 
-            .status(400) 
-            .json({ error: "Approved entries cannot be edited" }); 
-          } 
-          
-          const isOwner = 
-            timeEntry.userId.toString() === req.user._id.toString(); 
-          const isLeaderOrAdmin = ["team-leader", "admin"].includes(req.user.role); 
+    const timeEntry = await TimeEntry.findById(timeEntryId);
 
-          if (!isOwner && !isLeaderOrAdmin) { 
-            return res.status(403).json({ error: "Not authorized" }); 
-          } 
-            
-          if (weekStart) timeEntry.weekStart = weekStart; 
-          
-          if (weekEnd) timeEntry.weekEnd = weekEnd; 
-          
-          if (description !== undefined) 
-            timeEntry.description = description; 
-          
-          if (timeEntry.companyType === "RWS" && weeklyTotalHours !== undefined) { 
-            const parsed = parseFloat(weeklyTotalHours); 
-            
-            if (!isNaN(parsed)) { 
-              timeEntry.weeklyTotalHours = Number(parsed.toFixed(2)); 
-              timeEntry.totalHours = Number(parsed.toFixed(2)); 
-            } 
-            
-          } 
-          
-          if (
-            
-            ["Welocalized", "Telus"].includes(timeEntry.companyType) && 
-            dailyHours) { 
-              let dailyData = 
-              typeof dailyHours === "string" 
-              ? JSON.parse(dailyHours) 
-              : dailyHours; 
-              
-              const parsedDaily = {}; 
-              
-              for (const [day, value] of Object.entries(dailyData)) { 
-                const val = parseFloat(value || 0); 
-                parsedDaily[day] = Number(val.toFixed(2)
-              
-              ); 
-            } 
-            
-            timeEntry.dailyHours = parsedDaily; 
-            timeEntry.totalHours = Number( 
-              Object.values(parsedDaily)
-              .reduce((s, v) => s + v, 0)
-              .toFixed(2) 
-            ); 
-          } 
-          
-          if (req.file) { 
-            timeEntry.proofUrl = await uploadToS3(req.file, "time-proofs"); 
-          
-          } 
-          
-          await timeEntry.save(); 
-          res.json({ success: true, 
-            message: "Updated successfully", 
-            timeEntry,
-          }); 
-        } catch (error) { 
-          console.error("Update Error:", error); 
-          res.status(500).json({ error: "Failed to update" }); 
-        } 
-      }; 
-      
-      /* ============== APPROVE TIME ENTRY =================== */ 
-      exports.approveTimeEntry = async (req, res) => { 
-        try { 
-          const { timeEntryId } = req.params; 
-          
-          const timeEntry = await TimeEntry.findById(timeEntryId); 
-          if (!timeEntry || timeEntry.status === "approved") { 
-            return res 
-            .status(400) 
-            .json({ error: "Invalid entry or already approved" 
+    if (!timeEntry) {
+      return res.status(404).json({ error: "Time entry not found" });
+    }
 
-            }); 
-          } 
+    //  Prevent editing locked entries (after payroll)
+    if (timeEntry.locked) {
+      return res.status(400).json({
+        error: "This entry is locked after payroll processing.",
+      });
+    }
 
-          timeEntry.status = "approved"; 
-          timeEntry.approvedBy = req.user._id; 
-          timeEntry.approvedAt = new Date();
+    //  Authorization
+    const isOwner =
+      timeEntry.userId.toString() === req.user._id.toString();
+    const isLeaderOrAdmin = ["team-leader", "admin"].includes(
+      req.user.role
+    );
 
-          await timeEntry.save(); 
+    if (!isOwner && !isLeaderOrAdmin) {
+      return res.status(403).json({ error: "Not authorized" });
+    }
 
-          res.json({ success: true, 
-            message: "Approved successfully", 
-            timeEntry, 
-          }); 
-        } catch (error) { res.status(500).json({ error: "Failed to approve" });
-        } 
-      };
+    /* ================= BASIC FIELD UPDATES ================= */
+
+    if (weekStart) timeEntry.weekStart = weekStart;
+    if (weekEnd) timeEntry.weekEnd = weekEnd;
+
+    if (description !== undefined) {
+      timeEntry.description = description;
+    }
+
+    /* ================= RWS UPDATE ================= */
+
+    if (
+      timeEntry.companyType === "RWS" &&
+      weeklyTotalHours !== undefined
+    ) {
+      const parsed = parseFloat(weeklyTotalHours);
+
+      if (isNaN(parsed) || parsed < 0) {
+        return res.status(400).json({
+          error: "Invalid weekly total hours",
+        });
+      }
+
+      timeEntry.weeklyTotalHours = Number(parsed.toFixed(2));
+      timeEntry.totalHours = Number(parsed.toFixed(2));
+    }
+
+    /* ========== Welocalized / Telus UPDATE ========== */
+
+    if (
+      ["Welocalized", "Telus"].includes(timeEntry.companyType) &&
+      dailyHours
+    ) {
+      let dailyData =
+        typeof dailyHours === "string"
+          ? JSON.parse(dailyHours)
+          : dailyHours;
+
+      const parsedDaily = {};
+
+      for (const [day, value] of Object.entries(dailyData)) {
+        const val = parseFloat(value || 0);
+
+        if (isNaN(val) || val < 0 || val > 8) {
+          return res.status(400).json({
+            error: `${day} cannot exceed 8 hours`,
+          });
+        }
+
+        parsedDaily[day] = Number(val.toFixed(2));
+      }
+
+      timeEntry.dailyHours = parsedDaily;
+
+      timeEntry.totalHours = Number(
+        Object.values(parsedDaily)
+          .reduce((s, v) => s + v, 0)
+          .toFixed(2)
+      );
+    }
+
+    /* ================= PROOF UPDATE ================= */
+
+    if (req.file) {
+      timeEntry.proofUrl = await uploadToS3(
+        req.file,
+        "time-proofs"
+      );
+    }
+
+    await timeEntry.save();
+
+    res.json({
+      success: true,
+      message: "Updated successfully",
+      timeEntry,
+    });
+  } catch (error) {
+    console.error("Update Error:", error);
+    res.status(500).json({ error: "Failed to update" });
+  }
+};
+      /* ============== APPROVE TIME ENTRY =================== */
+exports.approveTimeEntry = async (req, res) => {
+  try {
+    const { timeEntryId } = req.params;
+
+    const timeEntry = await TimeEntry.findById(timeEntryId);
+
+    if (!timeEntry) {
+      return res.status(404).json({
+        error: "Time entry not found",
+      });
+    }
+
+    //  Prevent approving locked entries
+    if (timeEntry.locked) {
+      return res.status(400).json({
+        error: "This entry is locked after payroll processing and cannot be approved",
+      });
+    }
+
+    if (timeEntry.status === "approved") {
+      return res.status(400).json({
+        error: "Entry already approved",
+      });
+    }
+
+    timeEntry.status = "approved";
+    timeEntry.approvedBy = req.user._id;
+    timeEntry.approvedAt = new Date();
+
+    await timeEntry.save();
+
+    res.json({
+      success: true,
+      message: "Approved successfully",
+      timeEntry,
+    });
+  } catch (error) {
+    console.error("Approve Error:", error);
+    res.status(500).json({ error: "Failed to approve" });
+  }
+};
 
       /* ======================================================
                         REJECT TIME ENTRY
@@ -279,7 +347,12 @@ exports.rejectTimeEntry = async (req, res) => {
     if (req.user.role === "team-leader") {
       const team = await Team.findOne({ leaderId: req.user._id });
 
-      if (!team || !team.members.includes(timeEntry.userId)) {
+          if (
+      !team ||
+      !team.members.some(
+        (member) => member.toString() === timeEntry.userId.toString()
+      )
+    ) {
         return res.status(403).json({
           error: "Not authorized to reject this entry",
         });

@@ -11,8 +11,24 @@ import {
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import { useAuth } from "../contexts/useAuth";
-import Navbar from "../components/common/Navbar";
+import EarningsChart from "../components/common/EarningsChart";
 
+/**
+ * Dashboard Page
+ * ----------------
+ * Main landing page after user login.
+ *
+ * Displays:
+ * - User summary
+ * - Analytics charts
+ * - Recent activity
+ *
+ * Access to dashboard features depends on user role
+ * (Admin, Manager, Employee).
+ */
+
+
+// Define the Dashboard component that renders the main dashboard page for authenticated users.
 export default function Dashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -144,10 +160,7 @@ export default function Dashboard() {
     : 0;
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <Navbar />
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fadeIn">
 
         {/* ================= STATS ================= */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
@@ -179,12 +192,24 @@ export default function Dashboard() {
             icon={<Clock className="text-purple-500" size={32} />}
             border="border-purple-500"
             onClick={() => navigate("/subscription")}
-          />      
+          />  
 
         </div>
 
+              {/* ================= EARNINGS CHART ================= */}
+      <div className="bg-gray-800 rounded-xl shadow-lg p-6 mb-6 border border-gray-700">
+        <h3 className="text-lg font-semibold mb-4 text-gray-200">
+          Monthly Earnings Overview
+        </h3>
+
+        <div className="bg-gray-900 rounded-lg p-4">
+          <EarningsChart />
+        </div>
+      </div>
+        
+
         {/* ================= QUICK ACTIONS ================= */}
-        <div className="bg-white rounded-lg shadow p-6 mb-6">
+        <div className="bg-gray-800 rounded-xl shadow-lg p-6 mb-6 transition hover:shadow-2xl">
           <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -197,13 +222,7 @@ export default function Dashboard() {
                   label="Time Entry"
                   onClick={() => navigate("/time-entry")}
                 />
-{/*
-                <ActionButton
-                  icon={<Upload size={24} />}
-                  label="Upload Proof"
-                  onClick={() => navigate("/upload-proof")}
-                />
-*/}
+
                 <ActionButton
                   icon={<Download size={24} />}
                   label="Download Payment PDF"
@@ -242,12 +261,12 @@ export default function Dashboard() {
         
 
         {/* ================= RECENT ENTRIES ================= */}
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-700">
           <h3 className="text-lg font-semibold mb-4">Recent Time Entries</h3>
 
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50">
+              <thead className="bg-gray-700">
                 <tr>
                   <TableHead label="Week Range" />
                   <TableHead label="Company" />
@@ -260,9 +279,9 @@ export default function Dashboard() {
                 </tr>
               </thead>
 
-              <tbody className="divide-y divide-gray-200">
+              <tbody className="divide-y divide-gray-700">
                 {timeEntries.slice(0, 10).map((entry) => (
-                  <tr key={entry._id} className="hover:bg-gray-50">
+                  <tr key={entry._id} className="hover:bg-gray-750 transition duration-200">
 
                     {/* Week Rang */}
                    
@@ -336,7 +355,7 @@ export default function Dashboard() {
         </div>
 
       </div>
-    </div>
+    
   );
 }
 
@@ -344,13 +363,16 @@ export default function Dashboard() {
 
 function StatCard({ title, value, icon, border, onClick }) {
   return (
-    <div 
+    <div
       onClick={onClick}
-      className={`bg-white rounded-lg shadow p-6 border-l-4 ${border} cursor-pointer`} >
+      className={`bg-gray-800 rounded-xl shadow-lg p-6 border-l-4 ${border} 
+      cursor-pointer transition-all duration-300 
+      hover:scale-105 hover:shadow-2xl`}
+    >
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm text-gray-600">{title}</p>
-          <p className="text-2xl font-bold text-gray-800">{value}</p>
+          <p className="text-sm text-gray-400">{title}</p>
+          <p className="text-2xl font-bold text-white">{value}</p>
         </div>
         {icon}
       </div>
@@ -362,7 +384,15 @@ function ActionButton({ icon, label, onClick }) {
   return (
     <button
       onClick={onClick}
-      className="p-4 rounded-lg border-2 border-gray-300 bg-gray-50 hover:shadow-md transition flex flex-col items-center"
+      className="
+      p-4 rounded-xl 
+      border border-gray-700
+      bg-gray-900
+      hover:bg-gray-700
+      hover:scale-105
+      hover:shadow-xl
+      transition-all duration-300
+      flex flex-col items-center"
     >
       {icon}
       <p className="font-semibold mt-2">{label}</p>
@@ -372,7 +402,7 @@ function ActionButton({ icon, label, onClick }) {
 
 function TableHead({ label }) {
   return (
-    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">
       {label}
     </th>
   );
@@ -381,13 +411,13 @@ function TableHead({ label }) {
 function StatusBadge({ status }) {
   const styles =
     status === "approved"
-      ? "bg-green-100 text-green-800"
+      ? "bg-green-500/20 text-green-400"
       : status === "rejected"
-      ? "bg-red-100 text-red-800"
-      : "bg-yellow-100 text-yellow-800";
+      ? "bg-red-500/20 text-red-400"
+      : "bg-yellow-500/20 text-yellow-400";
 
   return (
-    <span className={`px-2 py-1 text-xs rounded-full ${styles}`}>
+    <span className={`px-3 py-1 text-xs rounded-full font-medium ${styles}`}>
       {status}
     </span>
   );

@@ -2,6 +2,12 @@ const Team = require("../models/Team");
 const User = require("../models/User");
 const mongoose = require("mongoose");
 
+/**
+ * Team Controller
+ * -----------------------
+ * Handles team management: creation, member assignment, and retrieval. 
+ */
+
 /* ======================================================
    CREATE TEAM (ADMIN ONLY)
 ====================================================== */

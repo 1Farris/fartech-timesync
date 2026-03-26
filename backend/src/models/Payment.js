@@ -1,4 +1,9 @@
 const mongoose = require('mongoose');
+/**
+ * Payment Model
+ * -----------------------
+ * Represents a payment record for a user, including pay period, hours worked, pay amounts, and status.
+ */
 
 const paymentSchema = new mongoose.Schema({
   userId: {

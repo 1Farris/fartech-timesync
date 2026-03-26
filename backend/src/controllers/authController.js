@@ -1,6 +1,14 @@
 const User = require('../models/User');
 const { admin } = require('../config/firebase');
+/**
+ * Auth Controller
+ * -----------------------
+ * Handles user registration, login, and profile retrieval. 
+ */
 
+/* ======================================================
+   AUTH CONTROLLER
+====================================================== */
 
 exports.register = async (req, res) => {
   try {
@@ -68,7 +76,9 @@ exports.login = async (req, res) => {
     res.status(401).json({ error: 'Invalid or expired token' });
   }
 };
-
+/* ======================================================
+   GET USER PROFILE
+====================================================== */
 exports.getProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user._id)

@@ -4,6 +4,12 @@ const User = require('../models/User');
 const PDFDocument = require('pdfkit');
 const stripe = require("../config/stripe");
 
+/**
+ * Payment Controller
+ * -----------------------
+ * Handles payment calculations, Stripe integration, and PDF generation for payslips.  
+ */
+
 /* ======================================================
    CALCULATE PAYMENT
 ====================================================== */

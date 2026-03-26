@@ -2,6 +2,20 @@ import React, { useState } from "react";
 import api from "../services/api";
 import { useNavigate } from "react-router-dom";
 
+/**
+ * TimeEntry.jsx
+ * -----------------------
+ * This component renders the weekly time entry form for users to submit their work hours. 
+ * Users can select their company type (RWS, Welocalized, or Telus) and enter either a total weekly 
+ * hour (for RWS) or daily hours (for Welocalized and Telus). The form also allows users to provide 
+ * a description and upload proof of their work hours. Upon submission, the form data is sent to the 
+ * backend API to create a new time entry. The component uses React's useState hook to manage form 
+ * state and useNavigate from react-router-dom to redirect users after successful submission. 
+ * Tailwind CSS is used for styling the form and layout.
+ * 
+ */
+
+// Define the TimeEntry component that renders the weekly time entry form and handles form submission.
 export default function TimeEntry() {
   const navigate = useNavigate();
 
@@ -87,9 +101,12 @@ export default function TimeEntry() {
     }
   };
 
+  // Render the weekly time entry form with fields for company type, week selection, hours input, 
+  // description, and proof upload. The form submission is handled by the handleSubmit function which 
+  // sends the data to the backend API.
   return (
-    <div className="min-h-screen bg-gray-100 flex justify-center items-start py-10">
-      <div className="bg-white shadow-xl rounded-xl p-8 w-full max-w-2xl">
+    <div className="flex justify-center items-start py-10">
+      <div className="bg-gray-800 border border-gray-700 rounded-xl p-8 w-full max-w-2xl">
         <h2 className="text-2xl font-bold mb-6 text-center">
           Weekly Time Entry
         </h2>
@@ -104,7 +121,7 @@ export default function TimeEntry() {
             <select
               value={companyType}
               onChange={(e) => setCompanyType(e.target.value)}
-              className="border p-3 w-full rounded-lg focus:ring-2 focus:ring-blue-500"
+              className="w-full bg-gray-900 text-white border border-gray-700 rounded-lg p-3 focus:ring-2 focus:ring-blue-500"
               required
             >
               <option value="">Select Type</option>
@@ -128,7 +145,7 @@ export default function TimeEntry() {
                 type="date"
                 value={weekStart}
                 onChange={(e) => setWeekStart(e.target.value)}
-                className="border p-3 w-full rounded-lg"
+                className="bg-gray-900 border border-gray-700 p-3 w-full rounded-lg text-white"
                 required
               />
             </div>
@@ -141,7 +158,7 @@ export default function TimeEntry() {
                 type="date"
                 value={weekEnd}
                 onChange={(e) => setWeekEnd(e.target.value)}
-                className="border p-3 w-full rounded-lg"
+                className="bg-gray-900 border border-gray-700 p-3 w-full rounded-lg text-white"
                 required
               />
             </div>
@@ -160,7 +177,7 @@ export default function TimeEntry() {
                 placeholder="e.g 42.50"
                 value={weeklyTotalHours}
                 onChange={(e) => setWeeklyTotalHours(e.target.value)}
-                className="border p-3 w-full rounded-lg"
+                className="bg-gray-900 border border-gray-700 p-3 w-full rounded-lg text-white"
                 required
               />
             </div>
@@ -207,7 +224,7 @@ export default function TimeEntry() {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows="3"
-              className="border p-3 w-full rounded-lg"
+              className="bg-gray-900 border border-gray-700 p-3 w-full rounded-lg text-white"
             />
           </div>
 
